@@ -357,8 +357,13 @@ class GitArchiver(object):
                     if m:
                         repo_submodule_path = fspath(m.group(1))  # relative to repo_path
                         main_repo_submodule_path = path.join(repo_path, repo_submodule_path)  # relative to main_repo_abspath
+                        self.LOG.info("walking {}".format(main_repo_submodule_path))
 
                         if self.is_file_excluded(repo_abspath, repo_submodule_path):
+                            continue
+
+                        if not path.isfile(path.join(main_repo_submodule_path, '.git')):
+                            self.LOG.info("skipping uninitialized {}".format(main_repo_submodule_path))
                             continue
 
                         for main_repo_submodule_file_path in self.walk_git_files(main_repo_submodule_path):
